@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import socketIOClient from "socket.io-client";
+import { io } from "socket.io-client";
 
-const socket = socketIOClient("http://localhost:8000");
+const socket = io("wss://old-horse-14.loca.lt/", { transports: ["websocket"] });
 
 function App() {
   const { handleSubmit, setValue, register } = useForm();
