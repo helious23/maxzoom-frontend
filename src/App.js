@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { io } from "socket.io-client";
 
-const socket = io("wss://old-horse-14.loca.lt/", { transports: ["websocket"] });
+const socket = io("wss://spotty-lizard-97.loca.lt", {
+  transports: ["websocket"],
+});
 
 function App() {
   const { handleSubmit, setValue, register } = useForm();
@@ -65,8 +67,8 @@ function App() {
     setCameraOff((prev) => !prev);
   };
 
-  const onCameraChangeValid = async (data) => {
-    await getMedia(data.cameraChange);
+  const onCameraChange = async (event) => {
+    await getMedia(event.target.value);
     if (myPeerConnection) {
       const videoTrack = myStream.getVideoTracks()[0];
       const videoSender = myPeerConnection
@@ -196,25 +198,17 @@ function App() {
                 <button onClick={toggleCameraOff}>
                   {cameraOff ? "카메라 켜기" : "카메라 끄기"}
                 </button>
-                <form onSubmit={handleSubmit(onCameraChangeValid)}>
-                  {currentCamera ? (
-                    <select
-                      {...register("cameraChange")}
-                      value={currentCamera.label}
-                    >
-                      {cameras
-                        ? cameras.map((camera) => (
-                            <option
-                              key={camera.deviceId}
-                              value={camera.deviceId}
-                            >
-                              {camera.label}
-                            </option>
-                          ))
-                        : null}
-                    </select>
-                  ) : null}
-                </form>
+                {currentCamera ? (
+                  <select onChange={onCameraChange}>
+                    {cameras
+                      ? cameras.map((camera) => (
+                          <option key={camera.deviceId} value={camera.deviceId}>
+                            {camera.label}
+                          </option>
+                        ))
+                      : null}
+                  </select>
+                ) : null}
               </div>
             )}
             <video
